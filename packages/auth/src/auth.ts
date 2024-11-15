@@ -21,6 +21,7 @@ export const config = {
       },
     }),
   ],
+  trustedOrigins: ["createt3turbowithotp://"],
 } satisfies BetterAuthOptions;
 
 export const auth = betterAuth(config);

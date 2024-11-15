@@ -97,19 +97,61 @@ function CreatePost() {
 
 function MobileAuth() {
   const { data: session } = authClient.useSession();
+  const [email, setEmail] = useState("test@example.com");
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [otp, setOtp] = useState("");
+
+  const handleSignInPress = async () => {
+    if (session) {
+      signOut();
+    } else {
+      await authClient.emailOtp.sendVerificationOtp({
+        type: "sign-in",
+        email,
+      });
+      setShowOtpInput(true);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      const response = await authClient.signIn.emailOtp({ email, otp });
+
+      console.log("response", response);
+
+      setShowOtpInput(false);
+      setOtp("");
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+    }
+  };
+
   return (
     <>
       <Text className="pb-2 text-center text-xl font-semibold text-white">
         {session?.user.name ?? "Not logged in"}
       </Text>
       <Button
-        onPress={() => (session ? signOut() : signIn.social({
-          provider: "discord",
-          callbackURL: "/",
-        }))}
-        title={session ? "Sign Out" : "Sign In With Discord"}
+        onPress={handleSignInPress}
+        title={session ? "Sign Out" : "Sign In With OTP"}
         color={"#5B65E9"}
       />
+      {showOtpInput && !session && (
+        <View className="mt-4 flex gap-2">
+          <TextInput
+            className="items-center rounded-md border border-input bg-background px-3 text-lg leading-[1.25] text-foreground"
+            value={otp}
+            onChangeText={setOtp}
+            placeholder="Enter OTP"
+            keyboardType="number-pad"
+          />
+          <Button
+            onPress={handleVerifyOtp}
+            title="Verify OTP"
+            color={"#5B65E9"}
+          />
+        </View>
+      )}
     </>
   );
 }
