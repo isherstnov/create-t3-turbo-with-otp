@@ -4,10 +4,13 @@ import { env } from '../env'
 
 
 export const authClient = createAuthClient({
-    plugins: [expoClient({
-        scheme: "expo" // change this to your app's scheme
-    })],
-    baseURL: env.AUTH_DISCORD_ID,
+  plugins: [
+    expoClient({
+      scheme: "createt3turbowithotp",
+      storagePrefix: "createt3turbowithotp",
+    }),
+  ],
+  baseURL: env.BETTER_AUTH_URL,
 })
 
 export const { signIn, signOut } = authClient

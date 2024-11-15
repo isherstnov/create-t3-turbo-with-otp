@@ -12,17 +12,19 @@ export async function AuthShowcase() {
         <Button
           size="lg"
           formAction={async () => {
-            "use server";
-            const res = await auth.api.signInSocial({
-              body: {
-                provider: "discord",
-                callbackURL: "/"
-              },
-            });
-            redirect(res.url)
+              "use server";
+
+              await auth.api.sendVerificationOTP({
+                  body: {
+                      type: 'sign-in',
+                      email: 'test@example.com'
+                  }
+              });
+
+              redirect('/auth/login')
           }}
         >
-          Sign in with Discord
+          Sign in with OTP
         </Button>
       </form>
     );

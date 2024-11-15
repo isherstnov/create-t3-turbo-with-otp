@@ -4,8 +4,6 @@ import { appRouter, createTRPCContext } from "@acme/api";
 import { auth } from "@acme/auth";
 import { NextRequest } from "next/server";
 
-export const runtime = "edge";
-
 /**
  * Configure basic CORS headers
  * You should extend this to match your needs

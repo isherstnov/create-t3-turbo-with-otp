@@ -1,24 +1,27 @@
-import { db } from "@acme/db/client";
-import { oAuthProxy } from "better-auth/plugins"
-import { betterAuth, BetterAuthOptions } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { env } from "../env";
+import type { BetterAuthOptions } from "better-auth";
 import { expo } from "@better-auth/expo";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { emailOTP, oAuthProxy } from "better-auth/plugins";
+
+import { db } from "@acme/db/client";
+
+import { env } from "../env";
 
 export const config = {
-    database: drizzleAdapter(db, {
-        provider: "pg"
+  database: drizzleAdapter(db, {
+    provider: "pg",
+  }),
+  secret: env.AUTH_SECRET,
+  plugins: [
+    expo(),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        console.log("sendVerificationOTP", { email, otp, type });
+      },
     }),
-    secret: env.AUTH_SECRET,
-    plugins: [expo(), oAuthProxy()],
-    socialProviders: {
-        discord: {
-            clientId: env.AUTH_DISCORD_ID,
-            clientSecret: env.AUTH_DISCORD_SECRET,
-            redirectURI: "http://localhost:3000/api/auth/callback/discord",
-        }
-    }
-} satisfies BetterAuthOptions
+  ],
+} satisfies BetterAuthOptions;
 
 export const auth = betterAuth(config);
-export type Session = typeof auth.$Infer.Session
+export type Session = typeof auth.$Infer.Session;
