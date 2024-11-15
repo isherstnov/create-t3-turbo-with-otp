@@ -7,7 +7,7 @@ import superjson from "superjson";
 import type { AppRouter } from "@acme/api";
 
 import { getBaseUrl } from "./base-url";
-import { getCookiesFromStore } from "./cookies-store";
+import { authClient } from "~/utils/auth";
 
 /**
  * A set of typesafe hooks for consuming your API.
@@ -33,15 +33,17 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
         httpBatchLink({
           transformer: superjson,
           url: `${getBaseUrl()}/api/trpc`,
-          async headers() {
+          headers() {
             const headers = new Map<string, string>();
             headers.set("x-trpc-source", "expo-react");
 
-            const cookies = await getCookiesFromStore();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
+            const cookies = authClient.getCookie();
 
             console.log('cookies:', cookies);
 
             if (cookies) {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
               headers.set("Cookie", cookies);
             }
 
