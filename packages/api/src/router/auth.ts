@@ -1,7 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 
 import { protectedProcedure, publicProcedure } from "../trpc";
-import { auth } from "@acme/auth";
 
 export const authRouter = {
   getSession: publicProcedure.query(({ ctx }) => {
@@ -10,10 +9,7 @@ export const authRouter = {
   getSecretMessage: protectedProcedure.query(() => {
     return "you can see this secret message!";
   }),
-  signOut: protectedProcedure.mutation(async (opts) => {
-    if (!opts.ctx.token) {
-      return { success: false };
-    }
+  signOut: protectedProcedure.mutation(() => {
     return { success: true };
   }),
 } satisfies TRPCRouterRecord;
