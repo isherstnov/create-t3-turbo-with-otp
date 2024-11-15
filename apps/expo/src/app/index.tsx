@@ -129,7 +129,7 @@ function MobileAuth() {
   return (
     <>
       <Text className="pb-2 text-center text-xl font-semibold text-white">
-        {session?.user.name ?? "Not logged in"}
+        {session?.user?.name ?? "Not logged in"}
       </Text>
       <Button
         onPress={handleSignInPress}
